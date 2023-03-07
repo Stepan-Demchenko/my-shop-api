@@ -3,14 +3,16 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { ApiResponseProperty } from '@nestjs/swagger';
 
-export class ShopBaseEntity {
+export abstract class AbstractEntity {
   @PrimaryGeneratedColumn()
+  @ApiResponseProperty()
   id: number;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ select: false })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ select: false })
   updatedAt: Date;
 }

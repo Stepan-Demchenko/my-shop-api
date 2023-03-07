@@ -27,7 +27,9 @@ export async function getProductsFromDirectoryFiles(
       );
       return {
         ...product,
-        title: product.title || faker.commerce.productDescription(),
+        description: product.description.length
+          ? product.description
+          : faker.commerce.productDescription(),
         rate: +faker.commerce.price(0, 5),
         price: +faker.commerce.price(10000, 80000),
         discount: +faker.commerce.price(10, 80),

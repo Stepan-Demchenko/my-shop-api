@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from '@hapi/joi';
-import { typeOrmAsyncConfig } from '../../config/typeOrm.config';
+import { typeOrmAsyncConfig } from '../config/typeOrm.config';
 
 @Module({
   imports: [
