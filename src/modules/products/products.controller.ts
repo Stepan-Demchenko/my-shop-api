@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query } from "@nestjs/common";
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Product } from './entities/product.entity';
@@ -38,6 +38,12 @@ export class ProductsController {
   @ApiPaginatedResponse(Product)
   mostPopularProducts() {
     return this.productsService.mostPopular();
+  }
+
+  @Get('search')
+  @ApiTags('search')
+  searchProducts(@Query('search') search: string) {
+    return this.productsService.search(search);
   }
 
   @Get(':id')

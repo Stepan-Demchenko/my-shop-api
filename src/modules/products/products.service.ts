@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { Product } from './entities/product.entity';
 import { Order } from '../../shared/constants/order';
 import { DEFAULT_PAGE_LIMIT } from '../../shared/constants/default-page-limit.constant';
@@ -48,6 +48,16 @@ export class ProductsService {
 
     const pageMetaDto = new PageMetaDto({ itemsCount, pageOptionsDto });
     return new PageDto(entities, pageMetaDto);
+  }
+
+  async search(search: string) {
+    const founded = await this.productRepository.find({
+      where: {
+        title: ILike('%' + search + '%'),
+      },
+      take: DEFAULT_PAGE_LIMIT,
+    });
+    return new PageDto(founded);
   }
 
   async mostPopular() {
