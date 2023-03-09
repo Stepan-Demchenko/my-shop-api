@@ -1,9 +1,13 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query } from "@nestjs/common";
 import { ProductsService } from './products.service';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Product } from './entities/product.entity';
 import { ApiPaginatedResponse } from '../../shared/decorators/api-paginated-response';
 import { ApiSingleResponse } from '../../shared/decorators/api-single-response';
+import { PageOptionsDto } from '../../shared/dto/page-options.dto';
+import { PageDto } from '../../shared/dto/page.dto';
+import { OrderDto } from '../../shared/dto/order.dto';
+import { ProductsFilterDto } from './dto/products-filter.dto';
 
 @Controller('products')
 @ApiTags('products')
@@ -15,11 +19,21 @@ export class ProductsController {
   //   return this.productsService.create(createProductDto);
   // }
 
-  // @Get()
-  // findAll() {}
+  @Get()
+  @ApiOperation({ summary: 'Retrieve all products by different conditions' })
+  @ApiQuery({ type: () => ProductsFilterDto })
+  @ApiQuery({ type: () => PageOptionsDto })
+  @ApiPaginatedResponse(Product)
+  findAll(
+    @Query() productsFilter: ProductsFilterDto,
+    @Query() pageOptionsDto: PageOptionsDto,
+    @Query() order: OrderDto,
+  ): Promise<PageDto<Product>> {
+    return this.productsService.findAll(productsFilter, pageOptionsDto, order);
+  }
 
-  @Get('most-popular')
-  @ApiTags('most-popular')
+  @Get('popular')
+  @ApiTags('popular')
   @ApiOperation({ summary: 'Retrieve most populars products' })
   @ApiPaginatedResponse(Product)
   mostPopularProducts() {
@@ -29,7 +43,7 @@ export class ProductsController {
   @Get(':id')
   @ApiSingleResponse(Product)
   @ApiOperation({ summary: 'Retrieve product by id' })
-  findOne(@Query('id') id: number) {
+  findOne(@Param('id') id: number) {
     return this.productsService.findOne(+id);
   }
 

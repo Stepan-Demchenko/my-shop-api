@@ -1,5 +1,5 @@
 import { Column, Entity, OneToMany, Unique } from 'typeorm';
-import { AbstractEntity } from '../../../core/entity/shop-base.entity';
+import { AbstractEntity } from '../../../core/entity/abstract.entity';
 import { Product } from '../../products/entities/product.entity';
 import { ApiResponseProperty } from '@nestjs/swagger';
 

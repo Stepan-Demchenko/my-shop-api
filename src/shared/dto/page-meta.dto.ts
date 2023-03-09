@@ -3,17 +3,17 @@ import { PageOptionsDto } from './page-options.dto';
 
 export interface PageMetaDtoParameters {
   pageOptionsDto: PageOptionsDto;
-  itemCount: number;
+  itemsCount: number;
 }
 export class PageMetaDto {
   @ApiProperty()
   readonly page: number;
 
   @ApiProperty()
-  readonly take: number;
+  readonly limit: number;
 
   @ApiProperty()
-  readonly itemCount: number;
+  readonly itemsCount: number;
 
   @ApiProperty()
   readonly pageCount: number;
@@ -24,11 +24,11 @@ export class PageMetaDto {
   @ApiProperty()
   readonly hasNextPage: boolean;
 
-  constructor({ pageOptionsDto, itemCount }: PageMetaDtoParameters) {
+  constructor({ pageOptionsDto, itemsCount }: PageMetaDtoParameters) {
     this.page = pageOptionsDto.page;
-    this.take = pageOptionsDto.take;
-    this.itemCount = itemCount;
-    this.pageCount = Math.ceil(this.itemCount / this.take);
+    this.limit = pageOptionsDto.limit;
+    this.itemsCount = itemsCount;
+    this.pageCount = Math.ceil(this.itemsCount / this.limit);
     this.hasPreviousPage = this.page > 1;
     this.hasNextPage = this.page < this.pageCount;
   }

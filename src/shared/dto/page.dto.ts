@@ -8,7 +8,7 @@ export class PageDto<T> {
   @ApiProperty({ type: () => PageMetaDto })
   readonly meta: PageMetaDto;
 
-  constructor(data: T[], meta: PageMetaDto) {
+  constructor(data: T[], meta?: PageMetaDto) {
     this.data = data;
     this.meta = meta;
   }

@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from './entities/category.entity';
 import { Repository } from 'typeorm';
 import { ResponseModel } from '../../shared/models/response';
+import { PageDto } from '../../shared/dto/page.dto';
 
 @Injectable()
 export class CategoriesService {
@@ -16,8 +17,9 @@ export class CategoriesService {
     return 'This action adds a new category';
   }
 
-  findAll() {
-    return this.categoryRepository.find();
+  async findAll() {
+    const allCategories = await this.categoryRepository.find();
+    return new PageDto(allCategories);
   }
 
   async findOne(id: number): Promise<ResponseModel<Category>> {
