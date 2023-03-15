@@ -14,6 +14,9 @@ async function bootstrap() {
 
   // dto validation pipe
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
+  app.enableCors({
+    origin: [process.env.FRONT_END_DOMAIN],
+  });
 
   // swagger
   setupSwagger(app);
