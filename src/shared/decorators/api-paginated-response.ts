@@ -3,13 +3,13 @@ import { ApiExtraModels, ApiOkResponse, getSchemaPath } from '@nestjs/swagger';
 import { PageDto } from '../dto/page.dto';
 import { Product } from '../../modules/products/entities/product.entity';
 import { Brand } from '../../modules/brands/entities/brand.entity';
-import { Category } from '../../modules/categories/entities/category.entity';
+import { CategoryDto } from '../../modules/categories/dto/category.dto';
 
 export const ApiPaginatedResponse = <TModel extends Type<any>>(
   model: TModel,
 ) => {
   return applyDecorators(
-    ApiExtraModels(PageDto, Product, Brand, Category),
+    ApiExtraModels(PageDto, Product, Brand, CategoryDto),
     ApiOkResponse({
       description: 'Successfully received model list',
       schema: {

@@ -5,6 +5,7 @@ import { Category } from './entities/category.entity';
 import { ApiSingleResponse } from '../../shared/decorators/api-single-response';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ResponseModel } from '../../shared/models/response';
+import { CategoryDto } from './dto/category.dto';
 
 @Controller('categories')
 @ApiTags('categories')
@@ -18,13 +19,13 @@ export class CategoriesController {
 
   @Get()
   @ApiOperation({ summary: 'Retrieve all categories' })
-  @ApiPaginatedResponse(Category)
+  @ApiPaginatedResponse(CategoryDto)
   findAll() {
     return this.categoriesService.findAll();
   }
 
   @Get(':id')
-  @ApiSingleResponse(Category)
+  @ApiSingleResponse(CategoryDto)
   @ApiOperation({ summary: 'Retrieve category by id' })
   findOne(@Param('id') id: number): Promise<ResponseModel<Category>> {
     return this.categoriesService.findOne(+id);
