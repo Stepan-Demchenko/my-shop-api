@@ -8,6 +8,7 @@ import { PageOptionsDto } from '../../shared/dto/page-options.dto';
 import { PageDto } from '../../shared/dto/page.dto';
 import { OrderDto } from '../../shared/dto/order.dto';
 import { ProductsFilterDto } from './dto/products-filter.dto';
+import { SearchDto } from '../../shared/dto/search.dto';
 
 @Controller('products')
 @ApiTags('products')
@@ -34,15 +35,16 @@ export class ProductsController {
 
   @Get('popular')
   @ApiTags('popular')
-  @ApiOperation({ summary: 'Retrieve most populars products' })
+  @ApiOperation({ summary: 'Retrieve most populars products by category' })
   @ApiPaginatedResponse(Product)
-  mostPopularProducts() {
-    return this.productsService.mostPopular();
+  mostPopularProducts(@Query('categoryId') categoryId: number) {
+    return this.productsService.mostPopular(+categoryId);
   }
 
   @Get('search')
   @ApiTags('search')
-  searchProducts(@Query('search') search: string) {
+  @ApiPaginatedResponse(Product)
+  searchProducts(@Query() search: SearchDto) {
     return this.productsService.search(search);
   }
 

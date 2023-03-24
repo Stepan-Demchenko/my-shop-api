@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ILike, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Product } from './entities/product.entity';
 import { Order } from '../../shared/constants/order';
 import { DEFAULT_PAGE_LIMIT } from '../../shared/constants/default-page-limit.constant';
@@ -10,6 +10,7 @@ import { PageMetaDto } from '../../shared/dto/page-meta.dto';
 import { PageDto } from '../../shared/dto/page.dto';
 import { OrderDto } from '../../shared/dto/order.dto';
 import { ProductsFilterDto } from './dto/products-filter.dto';
+import { SearchDto } from '../../shared/dto/search.dto';
 
 @Injectable()
 export class ProductsService {
@@ -50,19 +51,26 @@ export class ProductsService {
     return new PageDto(entities, pageMetaDto);
   }
 
-  async search(search: string) {
-    const founded = await this.productRepository.find({
-      where: {
-        title: ILike('%' + search + '%'),
-      },
-      take: DEFAULT_PAGE_LIMIT,
+  async search(searchDto: SearchDto): Promise<PageDto<Product>> {
+    const qBuilder = this.productRepository.createQueryBuilder('product');
+    const [entities, itemsCount] = await qBuilder
+      .where('product.title ILIKE :title', { title: `%${searchDto.search}%` })
+      .innerJoinAndSelect('product.brand', 'brand')
+      .innerJoinAndSelect('product.category', 'category')
+      .skip(searchDto.skip)
+      .take(searchDto.limit)
+      .getManyAndCount();
+    const pageMetaDto = new PageMetaDto({
+      itemsCount,
+      pageOptionsDto: searchDto,
     });
-    return new PageDto(founded);
+    return new PageDto(entities, pageMetaDto);
   }
 
-  async mostPopular() {
+  async mostPopular(categoryId: number) {
     const qBuilder = this.productRepository.createQueryBuilder('product');
     const popularProducts = await qBuilder
+      .where('product.category = :categoryId', { categoryId: categoryId })
       .orderBy('product.rate', Order.DESC)
       .innerJoinAndSelect('product.brand', 'brand')
       .innerJoinAndSelect('product.category', 'category')
