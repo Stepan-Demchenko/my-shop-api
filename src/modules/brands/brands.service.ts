@@ -4,6 +4,8 @@ import { UpdateBrandDto } from './dto/update-brand.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brand } from './entities/brand.entity';
 import { Repository } from 'typeorm';
+import { PageDto } from '../../shared/dto/page.dto';
+import { ResponseModel } from '../../shared/models/response';
 
 @Injectable()
 export class BrandsService {
@@ -14,12 +16,19 @@ export class BrandsService {
     return 'This action adds a new brand';
   }
 
-  findAll() {
-    return this.brandRepository.find();
+  async findAll() {
+    const allBrands = await this.brandRepository
+      .createQueryBuilder('brand')
+      .getMany();
+    return new PageDto(allBrands);
   }
 
-  findOne(id: number) {
-    return this.brandRepository.findOneByOrFail({ id });
+  async findOne(id: number) {
+    const data = await this.brandRepository
+      .createQueryBuilder('brand')
+      .where('brand.id = :id', { id })
+      .getOneOrFail();
+    return new ResponseModel(data);
   }
 
   update(id: number, updateBrandDto: UpdateBrandDto) {
