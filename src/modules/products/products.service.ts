@@ -11,6 +11,7 @@ import { PageDto } from '../../shared/dto/page.dto';
 import { OrderDto } from '../../shared/dto/order.dto';
 import { ProductsFilterDto } from './dto/products-filter.dto';
 import { SearchDto } from '../../shared/dto/search.dto';
+import { ResponseModel } from "../../shared/models/response";
 
 @Injectable()
 export class ProductsService {
@@ -86,9 +87,7 @@ export class ProductsService {
       },
       relations: { brand: true, category: true },
     });
-    return {
-      data: product,
-    };
+    return new ResponseModel(product);
   }
 
   // update(id: number, updateProductDto: UpdateProductDto) {
