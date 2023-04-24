@@ -11,7 +11,7 @@ import { PageDto } from '../../shared/dto/page.dto';
 import { OrderDto } from '../../shared/dto/order.dto';
 import { ProductsFilterDto } from './dto/products-filter.dto';
 import { SearchDto } from '../../shared/dto/search.dto';
-import { ResponseModel } from "../../shared/models/response";
+import { ResponseModel } from '../../shared/models/response';
 
 @Injectable()
 export class ProductsService {

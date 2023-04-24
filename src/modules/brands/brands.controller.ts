@@ -1,25 +1,27 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { BrandsService } from './brands.service';
 import { ApiPaginatedResponse } from '../../shared/decorators/api-paginated-response';
 import { Brand } from './entities/brand.entity';
 import { ApiSingleResponse } from '../../shared/decorators/api-single-response';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { PageOptionsDto } from '../../shared/dto/page-options.dto';
+import { BrandFilterDto } from './dto/brand-filter-dto';
 
 @Controller('brands')
 @ApiTags('brands')
 export class BrandsController {
   constructor(private readonly brandsService: BrandsService) {}
 
-  // @Post()
-  // create(@Body() createBrandDto: CreateBrandDto) {
-  //   return this.brandsService.create(createBrandDto);
-  // }
-
   @Get()
+  @ApiQuery({ type: () => PageOptionsDto })
+  @ApiQuery({ type: () => BrandFilterDto })
   @ApiPaginatedResponse(Brand)
-  @ApiOperation({ summary: 'Retrieve all brands' })
-  findAll() {
-    return this.brandsService.findAll();
+  @ApiOperation({ summary: 'Retrieve brands' })
+  findAll(
+    @Query() pageOptionsDto: PageOptionsDto,
+    @Query() brandFilterDto: BrandFilterDto,
+  ) {
+    return this.brandsService.findAll(pageOptionsDto, brandFilterDto);
   }
 
   @Get(':id')

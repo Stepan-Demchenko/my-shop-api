@@ -6,6 +6,9 @@ import { Brand } from './entities/brand.entity';
 import { Repository } from 'typeorm';
 import { PageDto } from '../../shared/dto/page.dto';
 import { ResponseModel } from '../../shared/models/response';
+import { PageOptionsDto } from '../../shared/dto/page-options.dto';
+import { BrandFilterDto } from './dto/brand-filter-dto';
+import { PageMetaDto } from '../../shared/dto/page-meta.dto';
 
 @Injectable()
 export class BrandsService {
@@ -16,11 +19,25 @@ export class BrandsService {
     return 'This action adds a new brand';
   }
 
-  async findAll() {
-    const allBrands = await this.brandRepository
-      .createQueryBuilder('brand')
-      .getMany();
-    return new PageDto(allBrands);
+  async findAll(
+    pageOptionsDto: PageOptionsDto,
+    brandFilterDto: BrandFilterDto,
+  ) {
+    const qBuilder = this.brandRepository.createQueryBuilder('brand');
+    if (brandFilterDto.categoryId) {
+      qBuilder
+        .leftJoin('brand.products', 'product')
+        .where('product.category.id = :categoryId', {
+          categoryId: brandFilterDto.categoryId,
+        });
+    }
+    const [entities, itemsCount] = await qBuilder
+      .skip(pageOptionsDto.skip)
+      .take(pageOptionsDto.limit)
+      .getManyAndCount();
+
+    const pageMetaDto = new PageMetaDto({ itemsCount, pageOptionsDto });
+    return new PageDto(entities, pageMetaDto);
   }
 
   async findOne(id: number) {
